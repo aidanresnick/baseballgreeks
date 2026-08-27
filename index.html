@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Baseball Greeks — zStuff Leaderboards</title>
+<meta name="description" content="zStuff leaderboards and pitcher greeks: pitch quality graded from physical characteristics alone, with sensitivities to velocity and movement.">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+
+<div class="topbar">
+  <a class="brand" href="index.html"><span class="delta">Δ</span> Baseball Greeks</a>
+  <nav class="nav">
+    <a href="index.html" class="active">Leaderboards</a>
+    <a href="pitcher.html">Pitchers</a>
+  </nav>
+</div>
+
+<div class="wrap">
+  <h1 id="title">zStuff Leaderboard</h1>
+  <p class="sub">Pitch quality graded from physical characteristics alone, z-scored within
+    season &times; pitch type. <span class="hint">Greeks are the change in zStuff per +1 mph or
+    +1 inch of movement, evaluated along the pitch manifold.</span></p>
+
+  <div class="controls">
+    <div class="seg" id="ptseg"></div>
+    <div class="spacer"></div>
+    <select id="season" aria-label="Season"></select>
+    <select id="minn" aria-label="Minimum pitches">
+      <option value="50">50+ pitches</option>
+      <option value="100">100+ pitches</option>
+      <option value="200" selected>200+ pitches</option>
+      <option value="500">500+ pitches</option>
+    </select>
+    <input type="search" id="q" placeholder="Filter pitchers…" aria-label="Filter pitchers">
+  </div>
+
+  <div class="card">
+    <div class="tablewrap">
+      <table id="lb">
+        <thead><tr>
+          <th class="l" data-k="rank">#</th>
+          <th class="l" data-k="name">Pitcher</th>
+          <th data-k="n">Pitches</th>
+          <th data-k="z" title="Stuff grade: z-score within season × pitch type">zStuff</th>
+          <th data-k="xrv" title="Count-neutral xRV per pitch (model target)">xRV / pitch</th>
+          <th data-k="gv" title="Change in zStuff per +1 mph, along the manifold">Velo greek</th>
+          <th data-k="gdz" title="Change in zStuff per +1 inch of vertical movement">Vert greek</th>
+          <th data-k="gdx" title="Change in zStuff per +1 inch of horizontal movement">Horz greek</th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="empty" id="empty" hidden>No pitchers match.</div>
+  </div>
+</div>
+
+<footer>
+  <p>zStuff grades each pitch type from velocity, movement, and time to plate — nothing about
+     outcomes, counts, or location. Greeks are analytic sensitivities of the grade at each
+     pitcher's average pitch. Higher is better for the pitcher throughout.</p>
+  <p>Data: MLB Statcast via Baseball Savant, 2020&ndash;2026. A project by
+     <a href="https://aidanresnick.com" style="color:var(--ink-2)">Aidan Resnick</a>.</p>
+</footer>
+
+<script src="assets/common.js"></script>
+<script src="assets/leaderboard.js"></script>
+</body>
+</html>
