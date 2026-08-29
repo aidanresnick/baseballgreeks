@@ -113,7 +113,8 @@
     let acc;
     if (isAll && state.sort.startsWith('p')) {
       const pi = +state.sort.slice(1);
-      acc = r => r[4][pi] ?? (state.dir === -1 ? -Infinity : Infinity);
+      acc = r => (r[4][pi] && r[4][pi][0] != null) ? r[4][pi][0]
+        : (state.dir === -1 ? -Infinity : Infinity);
     } else {
       const k = KEYS[state.sort] ?? 3;
       acc = r => r[k];
@@ -134,7 +135,9 @@
           <td>${fmtN(r[2])}</td>
           <td class="z">${fmtZ(r[3])}${zbar(r[3])}</td>
           ${r[4].map((v, i) => `<td ${i === 0 ? 'class="grp"' : ''}>${
-            v == null ? '<span class="none">–</span>' : fmtZ(v)}</td>`).join('')}
+            v == null ? '<span class="none">–</span>'
+              : `${v[0] == null ? '<span class="none">–</span>' : fmtZ(v[0])}<span class="cnt">${fmtN(v[1])}</span>`
+          }</td>`).join('')}
         </tr>`
       : `<tr data-id="${r[1]}">
           <td class="rank l">${rank.get(r[1])}</td>

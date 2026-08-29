@@ -111,22 +111,34 @@ def main(src: str) -> None:
         sw = sum(m[4] for m in g)
         baselines[pt] = (sum(m[4] * m[6] for m in g) / sw - mu_all) / beta
 
+    # true per-PT pitch counts (every pitch thrown, no grade floor) — from
+    # pt_counts.csv exported by the model script with identical filters
+    true_counts = {}
+    with open(os.path.join(src, "pt_counts.csv")) as f:
+        for r in csv.DictReader(f):
+            true_counts[(r["season"], int(r["pitcher"]), r["pitch_type"])] = int(r["n"])
+
     pts_sorted = sorted(pts)
     for year in sorted(years):
-        arse = defaultdict(lambda: {"name": "", "n": 0, "wsum": 0.0, "z": {}})
+        arse = defaultdict(lambda: {"name": "", "wsum": 0.0, "gn": 0, "z": {}})
         for pt, yr, pid, name, n, z, _x in master:
             if yr != year:
                 continue
             a = arse[pid]
             a["name"] = name
-            a["n"] += n
+            a["gn"] += n
             a["wsum"] += n * (z + baselines[pt])
             a["z"][pt] = z
         rows = []
         for pid, a in arse.items():
-            per_pt = [a["z"].get(pt) for pt in pts_sorted]
-            rows.append([a["name"], pid, a["n"],
-                         round(a["wsum"] / a["n"], 3), per_pt])
+            per_pt = []
+            total = 0
+            for pt in pts_sorted:
+                cnt = true_counts.get((year, pid, pt), 0)
+                total += cnt
+                per_pt.append([a["z"].get(pt), cnt] if cnt > 0 else None)
+            rows.append([a["name"], pid, total,
+                         round(a["wsum"] / a["gn"], 3), per_pt])
         rows.sort(key=lambda x: -x[3])
         with open(os.path.join(out_dir, f"lb_ALL_{year}.json"), "w") as f:
             json.dump(rows, f, separators=(",", ":"))
