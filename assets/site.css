@@ -359,6 +359,16 @@ footer p { margin: 4px 0; }
 
 .headrow { display: flex; align-items: flex-end; gap: 16px; justify-content: space-between; flex-wrap: wrap; }
 
+/* ── arsenal summary card ─────────────────────────────── */
+.ptcard.summary { margin-bottom: 18px; }
+.ovline { color: var(--muted); font-size: 13.5px; margin-top: 4px; }
+.ovline .ovz { color: var(--ink); font-weight: 700; font-size: 17px; }
+.sumtab thead th { position: static; }
+.sumtab td .ptchip { font-size: 13.5px; }
+.sumtab tbody td { padding: 8px 11px; }
+
+.headrow { display: flex; align-items: flex-end; gap: 16px; justify-content: space-between; flex-wrap: wrap; }
+
 /* ── distribution hero ────────────────────────────────── */
 #hero { margin: 4px 0 16px; }
 .hero-panel {
