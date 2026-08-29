@@ -47,12 +47,12 @@ $PY $SITE/build_data.py $BB/nightly_run/output
 
 # 5. Commit + push only if anything changed.
 cd $SITE
-git pull --rebase -q origin main
 git add data
 if git diff --cached --quiet; then
   echo "no changes in site data"
 else
   git commit -m "Nightly data refresh through $yesterday"
+  git pull --rebase -q origin main
   git push origin main
   echo "pushed refresh through $yesterday"
 fi
