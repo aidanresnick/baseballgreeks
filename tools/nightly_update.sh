@@ -42,7 +42,9 @@ cp -f output/xnk_selection.csv nightly_run/output/
 echo "refitting xns model"
 ( cd nightly_run && ../.venv/bin/python _exp_csw_xns_allpt.py )
 
-# 4. Rebuild site JSON from the nightly outputs.
+# 4. Refresh SP/RP roles (reads the fresh pt_counts; fetches only missing +
+#    current season), then rebuild site JSON from the nightly outputs.
+$PY update_pitcher_roles.py
 $PY $SITE/build_data.py $BB/nightly_run/output
 
 # 5. Commit + push only if anything changed.

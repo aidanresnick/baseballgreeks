@@ -6,6 +6,7 @@
     year: meta.years[meta.years.length - 1],
     minn: 100,
     q: '',
+    role: '',
     sort: 'z',
     dir: -1,
     rows: [],
@@ -67,6 +68,9 @@
       `<option value="${v}"${v === state.minn ? ' selected' : ''}>${v.toLocaleString()}+ pitches</option>`).join('');
   }
 
+  const roleSel = document.getElementById('role');
+  roleSel.onchange = () => { state.role = roleSel.value; render(); };
+
   const q = document.getElementById('q');
   q.oninput = () => { state.q = q.value.trim().toLowerCase(); render(); };
 
@@ -105,6 +109,10 @@
   function render() {
     const isAll = state.pt === 'ALL';
     let rows = state.rows.filter(r => r[2] >= state.minn);
+    if (state.role) {
+      const ri = isAll ? 5 : 11;
+      rows = rows.filter(r => r[ri] === state.role);
+    }
     if (state.q) rows = rows.filter(r => r[0].toLowerCase().includes(state.q));
 
     // rank by zStuff regardless of current sort

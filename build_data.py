@@ -41,6 +41,7 @@ def main(src: str) -> None:
         sys.exit(f"no stuff_xns files under {src}")
 
     pts, years = set(), set()
+    pending_lb = []
     players = {}          # id -> {"name":, "pts": {pt: {year: row}}}
     counts = {}
     master = []           # (pt, year, pid, name, n, z, mean_xrv) for arsenal calc
@@ -70,14 +71,13 @@ def main(src: str) -> None:
                 curves = [[float(v) for v in r[c].split(";")]
                           for c in ("curvez_velo", "curvez_ivb", "curvez_hb")]
                 name = display_name(r["name"])
-                lb.append([name, pid] + row)
+                lb.append([name, pid] + row)  # role appended after roles load
                 p = players.setdefault(pid, {"name": name, "pts": {}})
                 p["pts"].setdefault(pt, {})[year] = row + curves
                 master.append((pt, year, pid, name, row[0], row[1],
                                float(r["mean_xRV"])))
         lb.sort(key=lambda x: -x[3])
-        with open(os.path.join(out_dir, f"lb_{pt}_{year}.json"), "w") as f:
-            json.dump(lb, f, separators=(",", ":"))
+        pending_lb.append((pt, year, lb))
         counts[f"{pt}_{year}"] = len(lb)
 
     # ── overall arsenal leaderboards ─────────────────────────────────────
@@ -113,12 +113,29 @@ def main(src: str) -> None:
         sw = sum(m[4] for m in g)
         baselines[pt] = (sum(m[4] * m[6] for m in g) / sw - mu_all) / beta
 
+    # SP/RP per pitcher-season from data/pitcher_roles.csv (MLB Stats API:
+    # SP when gamesStarted/games >= 0.5)
+    roles = {}
+    for cand in (os.path.join(src, "..", "..", "data", "pitcher_roles.csv"),
+                 os.path.join(src, "..", "data", "pitcher_roles.csv")):
+        if os.path.exists(cand):
+            with open(cand) as f:
+                for r in csv.DictReader(f):
+                    roles[(r["season"], int(r["pitcher"]))] = r["role"]
+            break
+
     # true per-PT pitch counts (every pitch thrown, no grade floor) — from
     # pt_counts.csv exported by the model script with identical filters
     true_counts = {}
     with open(os.path.join(src, "pt_counts.csv")) as f:
         for r in csv.DictReader(f):
             true_counts[(r["season"], int(r["pitcher"]), r["pitch_type"])] = int(r["n"])
+
+    for pt, year, lb in pending_lb:
+        for row in lb:
+            row.append(roles.get((year, row[1]), ""))
+        with open(os.path.join(out_dir, f"lb_{pt}_{year}.json"), "w") as f:
+            json.dump(lb, f, separators=(",", ":"))
 
     league = defaultdict(int)
     for (_, _, pt), n in true_counts.items():
@@ -143,7 +160,8 @@ def main(src: str) -> None:
                 total += cnt
                 per_pt.append([a["z"].get(pt), cnt] if cnt > 0 else None)
             rows.append([a["name"], pid, total,
-                         round(a["wsum"] / a["gn"], 3), per_pt])
+                         round(a["wsum"] / a["gn"], 3), per_pt,
+                         roles.get((year, pid), "")])
         rows.sort(key=lambda x: -x[3])
         with open(os.path.join(out_dir, f"lb_ALL_{year}.json"), "w") as f:
             json.dump(rows, f, separators=(",", ":"))

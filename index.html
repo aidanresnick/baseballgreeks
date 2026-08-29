@@ -6,7 +6,7 @@
 <title>Baseball Greeks — zStuff Leaderboards</title>
 <meta name="description" content="zStuff leaderboards and pitcher greeks: pitch quality graded from physical characteristics alone, with sensitivities to velocity and movement.">
 <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="assets/site.css?v=18">
+<link rel="stylesheet" href="assets/site.css?v=19">
 </head>
 <body>
 
@@ -27,6 +27,11 @@
     <div class="seg" id="ptseg"></div>
     <div class="spacer"></div>
     <select id="season" aria-label="Season"></select>
+    <select id="role" aria-label="Role">
+      <option value="">SP + RP</option>
+      <option value="SP">SP only</option>
+      <option value="RP">RP only</option>
+    </select>
     <select id="minn" aria-label="Minimum pitches"></select>
     <input type="search" id="q" placeholder="Filter pitchers…" aria-label="Filter pitchers">
   </div>
@@ -59,7 +64,7 @@
      <a href="https://aidanresnick.com" style="color:var(--ink-2)">Aidan Resnick</a>.</p>
 </footer>
 
-<script src="assets/common.js?v=18"></script>
-<script src="assets/leaderboard.js?v=18"></script>
+<script src="assets/common.js?v=19"></script>
+<script src="assets/leaderboard.js?v=19"></script>
 </body>
 </html>
