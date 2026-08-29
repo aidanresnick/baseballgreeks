@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Baseball Greeks — Pitcher Cards</title>
-<meta name="description" content="Player cards: zStuff by season for every pitch type, with velocity and movement greeks.">
+<title>Baseball Greeks — Research</title>
+<meta name="description" content="The research behind Baseball Greeks: the Pitcher Greeks paper on first principles, stuff models, and derivatives.">
 <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="assets/site.css?v=12">
 </head>
@@ -14,25 +14,27 @@
   <a class="brand" href="index.html"><span class="delta">Δ</span> Baseball Greeks</a>
   <nav class="nav">
     <a href="index.html">Leaderboards</a>
-    <a href="pitcher.html" class="active">Pitchers</a>
+    <a href="pitcher.html">Pitchers</a>
     <a href="glossary.html">Glossary</a>
-    <a href="research.html">Research</a>
+    <a href="research.html" class="active">Research</a>
   </nav>
 </div>
 
 <div class="wrap">
-  <h1>Pitcher Cards</h1>
-  <p class="sub">Every pitch type, every season &mdash; zStuff and its greeks.
-    <span class="hint">Every pitch type thrown appears, down to a single pitch; grades are within
-    season &times; pitch type.</span></p>
+  <h1>Research</h1>
+  <p class="sub">The work behind the numbers on this site.</p>
 
-  <div class="search-box">
-    <input type="text" id="psearch" placeholder="Search a pitcher…" autocomplete="off"
-           aria-label="Search a pitcher">
-    <div class="suggest" id="suggest"></div>
+  <div class="gloss">
+    <a class="gitem" href="https://aidanresnick.com/publications/pitcher-greeks/"
+       style="display:block">
+      <div class="gterm">Pitcher Greeks <span class="gsym">→</span></div>
+      <div class="gdef">First principles, stuff models, and derivatives. Why a
+        stuff surface must be smooth, identified within pitcher, and parsimonious
+        before its slopes mean anything — and how the greeks on this site are
+        built, priced, and tested against pitchers who actually changed their
+        pitches. Read the full paper at aidanresnick.com.</div>
+    </a>
   </div>
-
-  <div id="player"></div>
 </div>
 
 <footer>
@@ -44,7 +46,5 @@
      <a href="mailto:aidan.j.resnick@gmail.com" style="color:var(--ink-2)">aidan.j.resnick@gmail.com</a>.</p>
 </footer>
 
-<script src="assets/common.js?v=12"></script>
-<script src="assets/pitcher.js?v=12"></script>
 </body>
 </html>

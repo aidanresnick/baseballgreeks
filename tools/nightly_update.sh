@@ -35,7 +35,9 @@ if [[ ! -s $new_file || $(head -2 "$new_file" | wc -l) -lt 2 ]]; then
   exit 0
 fi
 
-# 3. Refit the canonical model in the sandbox (writes nightly_run/output only).
+# 3. Refresh pitcher positions (fetches only ids not seen before), then refit
+#    the canonical model in the sandbox (writes nightly_run/output only).
+$PY update_pitcher_positions.py
 cp -f output/xnk_selection.csv nightly_run/output/
 echo "refitting xns model"
 ( cd nightly_run && ../.venv/bin/python _exp_csw_xns_allpt.py )
