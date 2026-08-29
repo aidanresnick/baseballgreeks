@@ -209,6 +209,12 @@
     });
   }
 
+  const ALLBOARD = {};
+  async function overallRow(id, year) {
+    if (!ALLBOARD[year]) ALLBOARD[year] = await getJSON(`data/lb_ALL_${year}.json`);
+    return ALLBOARD[year].find(r => r[1] === id) || null;
+  }
+
   async function show(id) {
     const p = await playerData(id);
     const box = document.getElementById('player');
@@ -222,10 +228,51 @@
     };
     const defaultPt = [...pts].sort((a, b) => latestN(b) - latestN(a))[0];
     const allYears = [...new Set(pts.flatMap(pt => Object.keys(p.pts[pt])))].sort();
+    const latestYear = allYears[allYears.length - 1];
+
+    // arsenal summary: latest-season stuff + greeks per pitch type
+    const cur = pts
+      .filter(pt => p.pts[pt][latestYear])
+      .map(pt => ({ pt, r: p.pts[pt][latestYear] }))
+      .sort((a, b) => b.r[ROW.N] - a.r[ROW.N]);
+    const ov = await overallRow(id, latestYear);
+    const ovHtml = ov
+      ? `<div class="ovline"><span class="ovz">${fmtZ(ov[3])}</span> overall zStuff
+         &middot; ${fmtN(ov[2])} pitches &middot; ${latestYear}</div>`
+      : `<div class="ovline">${latestYear}</div>`;
 
     box.innerHTML = `
       <div class="player-head"><h2>${p.name}</h2>
         <div class="meta">${allYears[0]}–${allYears[allYears.length - 1]}</div></div>
+      <div class="ptcard summary" style="--pt:var(--accent)">
+        <div class="cardtop">
+          <div>
+            <div class="cardname">${p.name}</div>
+            ${ovHtml}
+          </div>
+          <div class="cardbrand"><span class="delta">Δ</span> Baseball Greeks
+            <div class="site">baseballgreeks.com</div></div>
+        </div>
+        <div class="tablewrap"><table class="sumtab">
+          <thead><tr>
+            <th class="l">Pitch</th><th>Pitches</th><th>Velo</th><th>zStuff</th>
+            <th class="grp">Delta</th><th>Gamma</th><th>Vega-Z</th><th>Vega-X</th>
+          </tr></thead>
+          <tbody>
+            ${cur.map(({ pt, r }) => `<tr data-pt="${pt}">
+              <td class="l"><span class="ptchip" style="--pt:${ptColor(pt)}">
+                <span class="dot"></span>${PT_NAMES[pt]}</span></td>
+              <td>${fmtN(r[ROW.N])}</td>
+              <td>${r[ROW.VELO].toFixed(1)}</td>
+              <td class="z">${fmtZ(r[ROW.Z])}</td>
+              <td class="grp">${fmtG(r[ROW.D])}</td>
+              <td>${fmtG(r[ROW.G])}</td>
+              <td>${fmtG(r[ROW.VZ])}</td>
+              <td>${fmtG(r[ROW.VX])}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table></div>
+      </div>
       <div class="seg pttabs" id="pttabs">
         ${pts.map(pt => `<button data-pt="${pt}" style="--pt:${ptColor(pt)}" title="${PT_NAMES[pt]}">
           <span class="dot"></span>${PT_NAMES[pt]}</button>`).join('')}
@@ -234,6 +281,9 @@
 
     document.querySelectorAll('#pttabs button').forEach(b => {
       b.onclick = () => renderCard(b.dataset.pt);
+    });
+    document.querySelectorAll('.sumtab tbody tr').forEach(tr => {
+      tr.onclick = () => renderCard(tr.dataset.pt);
     });
     renderCard(defaultPt);
   }

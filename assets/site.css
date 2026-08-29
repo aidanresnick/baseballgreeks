@@ -348,3 +348,11 @@ footer p { margin: 4px 0; }
 .gterm { font-weight: 700; font-size: 16px; margin-bottom: 5px; }
 .gterm .gsym { color: var(--accent); font-weight: 600; margin-left: 6px; }
 .gdef { color: var(--ink-2); font-size: 14.5px; line-height: 1.55; }
+
+/* ── arsenal summary card ─────────────────────────────── */
+.ptcard.summary { margin-bottom: 18px; }
+.ovline { color: var(--muted); font-size: 13.5px; margin-top: 4px; }
+.ovline .ovz { color: var(--ink); font-weight: 700; font-size: 17px; }
+.sumtab thead th { position: static; }
+.sumtab td .ptchip { font-size: 13.5px; }
+.sumtab tbody td { padding: 8px 11px; }
