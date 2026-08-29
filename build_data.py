@@ -10,9 +10,10 @@ Emits, under data/:
   players_index.json        [[display_name, id, shard], ...] for search
   players/{shard}.json      {id: {"name": .., "pts": {PT: {year: <same 9-value tail>}}}}
 
-Greeks are the on-manifold columns in xRV units x 1000 (paper naming):
-delta = greekm_velo, gamma = gammam_velo, vega-z = greekm_dz_in,
-vega-x = greekm_dx_in.
+Greeks are the on-manifold zStuff-unit columns — dzStuff/dinput (paper naming):
+delta = greekmz_velo (per +1 mph), gamma = gammamz_velo (per +1 mph^2),
+vega-z = greekmz_ivb_in, vega-x = greekmz_hb_in (per +1 inch of
+conventional IVB/HB, chain-ruled through az/ax with ddz/dIVB = tau^2/t^2).
 """
 import csv
 import glob
@@ -58,17 +59,19 @@ def main(src: str) -> None:
                     int(r["n_pt"]),
                     round(float(r["zStuff"]), 3),
                     round(float(r["velo"]), 1),
-                    round(float(r["greekm_velo"]) * 1000, 2),
-                    round(float(r["gammam_velo"]) * 1000, 3),
-                    round(float(r["dz_in"]), 1),
-                    round(float(r["greekm_dz_in"]) * 1000, 2),
-                    round(float(r["dx_in"]), 1),
-                    round(float(r["greekm_dx_in"]) * 1000, 2),
+                    round(float(r["greekmz_velo"]), 3),
+                    round(float(r["gammamz_velo"]), 3),
+                    round(float(r["ivb_in"]), 1),
+                    round(float(r["greekmz_ivb_in"]), 3),
+                    round(float(r["hb_in"]), 1),
+                    round(float(r["greekmz_hb_in"]), 3),
                 ]
+                curves = [[float(v) for v in r[c].split(";")]
+                          for c in ("curvez_velo", "curvez_ivb", "curvez_hb")]
                 name = display_name(r["name"])
                 lb.append([name, pid] + row)
                 p = players.setdefault(pid, {"name": name, "pts": {}})
-                p["pts"].setdefault(pt, {})[year] = row
+                p["pts"].setdefault(pt, {})[year] = row + curves
         lb.sort(key=lambda x: -x[3])
         with open(os.path.join(out_dir, f"lb_{pt}_{year}.json"), "w") as f:
             json.dump(lb, f, separators=(",", ":"))
@@ -94,6 +97,7 @@ def main(src: str) -> None:
                 "years": sorted(years),
                 "counts": counts,
                 "players": len(players),
+                "curve_grid": {"start": -3.0, "step": 0.5, "n": 13},
             },
             f,
             separators=(",", ":"),

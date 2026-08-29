@@ -228,26 +228,44 @@ td.z { color: var(--ink); font-weight: 600; }
 .ptcard {
   background: var(--surface);
   border: 1px solid var(--grid);
+  border-top: 3px solid var(--pt, var(--accent));
   border-radius: 14px;
-  padding: 18px 20px 14px;
+  padding: 16px 20px 16px;
   margin-top: 16px;
 }
 
-.ptcard .head {
+.cardtop {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.cardname { font-size: 21px; font-weight: 700; line-height: 1.2; }
+.cardsub {
   display: flex;
   align-items: baseline;
   gap: 10px;
-  margin-bottom: 12px;
+  flex-wrap: wrap;
+  margin-top: 3px;
 }
+.cardbrand {
+  margin-left: auto;
+  text-align: right;
+  font-weight: 700;
+  font-size: 13.5px;
+  white-space: nowrap;
+}
+.cardbrand .delta { color: var(--accent); }
+.cardbrand .site { font-weight: 400; font-size: 11px; color: var(--muted); margin-top: 1px; }
 .ptchip {
   display: inline-flex;
   align-items: center;
   gap: 7px;
   font-weight: 650;
-  font-size: 15px;
+  font-size: 14px;
 }
 .ptchip .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--pt, var(--accent)); }
-.ptcard .head .season { color: var(--muted); font-size: 13px; margin-left: auto; }
+.cardsub .season { color: var(--muted); font-size: 12.5px; }
 
 .tiles {
   display: grid;
@@ -264,6 +282,19 @@ td.z { color: var(--ink); font-weight: 600; }
 .tile .delta { font-size: 12.5px; margin-top: 1px; color: var(--muted); }
 .tile .delta.up { color: var(--good); }
 .tile .delta.down { color: var(--neg); }
+
+.curves {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+}
+.curve {
+  background: var(--surface-2);
+  border-radius: 10px;
+  padding: 4px 2px 0;
+}
+.curve svg { display: block; width: 100%; height: auto; }
 
 .spark { margin-top: 14px; }
 .spark svg { display: block; width: 100%; height: 84px; overflow: visible; }

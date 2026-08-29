@@ -6,7 +6,7 @@
 <title>Baseball Greeks — zStuff Leaderboards</title>
 <meta name="description" content="zStuff leaderboards and pitcher greeks: pitch quality graded from physical characteristics alone, with sensitivities to velocity and movement.">
 <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="assets/site.css?v=2">
+<link rel="stylesheet" href="assets/site.css?v=5">
 </head>
 <body>
 
@@ -21,10 +21,8 @@
 <div class="wrap">
   <h1 id="title">zStuff Leaderboard</h1>
   <p class="sub">Pitch quality graded from physical characteristics alone, z-scored within
-    season &times; pitch type. <span class="hint">Greeks in xRV &times; 1000: Delta per +1 mph,
-    Gamma per +1 mph&sup2;, Vegas per +1 inch of ride/sweep &mdash; evaluated along the pitch
-    manifold. Ride and Sweep are movement relative to the release-slot expectation
-    (sweep: + cut, &minus; run).</span></p>
+    season &times; pitch type. <span class="hint">Greeks are dzStuff/dx along the pitch
+    manifold: Delta per +1 mph, Gamma per +1 mph&sup2;, Vegas per +1 inch of induced vertical / horizontal break (HB: + cut, &minus; run).</span></p>
 
   <div class="controls">
     <div class="seg" id="ptseg"></div>
@@ -50,10 +48,10 @@
           <th class="grp" data-k="velo" title="Average release speed (mph)">Velo</th>
           <th data-k="d" title="Δ — change in stuff per +1 mph, along the manifold">Delta</th>
           <th data-k="g" title="Γ — change in delta per +1 mph (curvature)">Gamma</th>
-          <th class="grp" data-k="ivb" title="Vertical movement vs slot expectation (inches, ride-positive)">Ride</th>
-          <th data-k="vz" title="ν_z — change in stuff per +1 inch of ride">Vega-Z</th>
-          <th class="grp" data-k="hb" title="Horizontal movement vs slot expectation (inches, glove-side positive: + cut, − run)">Sweep</th>
-          <th data-k="vx" title="ν_x — change in stuff per +1 inch of sweep">Vega-X</th>
+          <th class="grp" data-k="ivb" title="Induced vertical break, release to plate (inches, ride-positive)">IVB</th>
+          <th data-k="vz" title="ν_z — change in zStuff per +1 inch of IVB">Vega-Z</th>
+          <th class="grp" data-k="hb" title="Horizontal break, release to plate (inches, glove-side positive: + cut, − run)">HB</th>
+          <th data-k="vx" title="ν_x — change in zStuff per +1 inch of HB">Vega-X</th>
         </tr></thead>
         <tbody></tbody>
       </table>
@@ -71,7 +69,7 @@
      <a href="mailto:aidan.j.resnick@gmail.com" style="color:var(--ink-2)">aidan.j.resnick@gmail.com</a>.</p>
 </footer>
 
-<script src="assets/common.js?v=2"></script>
-<script src="assets/leaderboard.js?v=2"></script>
+<script src="assets/common.js?v=5"></script>
+<script src="assets/leaderboard.js?v=5"></script>
 </body>
 </html>
