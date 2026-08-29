@@ -12,8 +12,9 @@ const fmtZ = v => (v > 0 ? '+' : '') + v.toFixed(2);
 const fmtG = v => (v > 0 ? '+' : '') + v.toFixed(2);
 const fmtN = v => v.toLocaleString('en-US');
 
+const DATA_V = '2';
 async function getJSON(path) {
-  const r = await fetch(path);
+  const r = await fetch(path + '?v=' + DATA_V);
   if (!r.ok) throw new Error(`${path}: ${r.status}`);
   return r.json();
 }
