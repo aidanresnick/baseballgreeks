@@ -60,6 +60,12 @@
 
   const minSel = document.getElementById('minn');
   minSel.onchange = () => { state.minn = +minSel.value; render(); };
+  function renderMinOptions(isAll) {
+    const opts = [1, 10, 50, 100, 200, 500, 1000, ...(isAll ? [2000] : [])];
+    if (!opts.includes(state.minn)) state.minn = Math.min(state.minn, 1000);
+    minSel.innerHTML = opts.map(v =>
+      `<option value="${v}"${v === state.minn ? ' selected' : ''}>${v.toLocaleString()}+ pitches</option>`).join('');
+  }
 
   const q = document.getElementById('q');
   q.oninput = () => { state.q = q.value.trim().toLowerCase(); render(); };
@@ -86,6 +92,7 @@
       : `${PT_NAMES[state.pt]} zStuff — ${state.year}`;
     history.replaceState(null, '', `?pt=${state.pt}&y=${state.year}`);
     document.querySelector('#lb thead tr').innerHTML = isAll ? HEADS.ALL : HEADS.PT;
+    renderMinOptions(isAll);
     if (isAll ? !(['name', 'n', 'z'].includes(state.sort) || state.sort.startsWith('p'))
         : state.sort.startsWith('p')) { state.sort = 'z'; state.dir = -1; }
     bindHead();
@@ -153,6 +160,5 @@
     });
   }
 
-  minSel.value = String(state.minn);
   load();
 })();
