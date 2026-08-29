@@ -21,8 +21,9 @@
     ALL: `<th class="l" data-k="rank">#</th>
       <th class="l" data-k="name">Pitcher</th>
       <th data-k="n">Pitches</th>
-      <th data-k="z" title="Usage-weighted zStuff + pitch-type baseline (cross-type level included)">zStuff</th>
-      <th class="l grp" data-k="mix" title="Pitch mix by usage">Arsenal</th>`,
+      <th data-k="z" title="Usage-weighted zStuff + pitch-type baseline (cross-type level included)">zStuff</th>`
+      + meta.pts.map((pt, i) =>
+        `<th ${i === 0 ? 'class="grp" ' : ''}data-k="p${i}" title="${PT_NAMES[pt]} zStuff">${pt}</th>`).join(''),
     PT: `<th class="l" data-k="rank">#</th>
       <th class="l" data-k="name">Pitcher</th>
       <th data-k="n">Pitches</th>
@@ -67,7 +68,7 @@
     document.querySelectorAll('thead th').forEach(th => {
       th.onclick = () => {
         const k = th.dataset.k;
-        if (k === 'rank' || k === 'mix') return;
+        if (k === 'rank') return;
         if (state.sort === k) state.dir *= -1;
         else { state.sort = k; state.dir = k === 'name' ? 1 : -1; }
         render();
@@ -85,7 +86,8 @@
       : `${PT_NAMES[state.pt]} zStuff — ${state.year}`;
     history.replaceState(null, '', `?pt=${state.pt}&y=${state.year}`);
     document.querySelector('#lb thead tr').innerHTML = isAll ? HEADS.ALL : HEADS.PT;
-    if (!['name', 'n', 'z'].includes(state.sort) && isAll) { state.sort = 'z'; state.dir = -1; }
+    if (isAll ? !(['name', 'n', 'z'].includes(state.sort) || state.sort.startsWith('p'))
+        : state.sort.startsWith('p')) { state.sort = 'z'; state.dir = -1; }
     bindHead();
     state.rows = await getJSON(`data/lb_${state.pt}_${state.year}.json`);
     render();
@@ -108,8 +110,15 @@
     const rank = new Map();
     [...rows].sort((a, b) => b[3] - a[3]).forEach((r, i) => rank.set(r[1], i + 1));
 
-    const k = KEYS[state.sort] ?? 3;
-    rows.sort((a, b) => (a[k] > b[k] ? 1 : a[k] < b[k] ? -1 : 0) * state.dir);
+    let acc;
+    if (isAll && state.sort.startsWith('p')) {
+      const pi = +state.sort.slice(1);
+      acc = r => r[4][pi] ?? (state.dir === -1 ? -Infinity : Infinity);
+    } else {
+      const k = KEYS[state.sort] ?? 3;
+      acc = r => r[k];
+    }
+    rows.sort((a, b) => (acc(a) > acc(b) ? 1 : acc(a) < acc(b) ? -1 : 0) * state.dir);
 
     document.querySelectorAll('thead th').forEach(th => {
       const base = th.textContent.replace(/[▲▼]\s*$/, '').trim();
@@ -124,7 +133,8 @@
           <td class="name l">${r[0]}</td>
           <td>${fmtN(r[2])}</td>
           <td class="z">${fmtZ(r[3])}${zbar(r[3])}</td>
-          <td class="l grp mix">${r[4]}</td>
+          ${r[4].map((v, i) => `<td ${i === 0 ? 'class="grp"' : ''}>${
+            v == null ? '<span class="none">–</span>' : fmtZ(v)}</td>`).join('')}
         </tr>`
       : `<tr data-id="${r[1]}">
           <td class="rank l">${rank.get(r[1])}</td>

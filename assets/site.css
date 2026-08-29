@@ -167,6 +167,7 @@ tbody tr:hover td { background: var(--surface-2); }
 th.grp, td.grp { border-left: 1px solid var(--baseline); }
 td.rank { color: var(--muted); width: 44px; }
 td.mix { font-size: 12.5px; color: var(--muted); }
+td .none { color: var(--baseline); }
 td.name { color: var(--ink); font-weight: 550; }
 td.z { color: var(--ink); font-weight: 600; }
 

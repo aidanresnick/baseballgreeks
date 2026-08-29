@@ -111,8 +111,9 @@ def main(src: str) -> None:
         sw = sum(m[4] for m in g)
         baselines[pt] = (sum(m[4] * m[6] for m in g) / sw - mu_all) / beta
 
+    pts_sorted = sorted(pts)
     for year in sorted(years):
-        arse = defaultdict(lambda: {"name": "", "n": 0, "wsum": 0.0, "mix": []})
+        arse = defaultdict(lambda: {"name": "", "n": 0, "wsum": 0.0, "z": {}})
         for pt, yr, pid, name, n, z, _x in master:
             if yr != year:
                 continue
@@ -120,13 +121,12 @@ def main(src: str) -> None:
             a["name"] = name
             a["n"] += n
             a["wsum"] += n * (z + baselines[pt])
-            a["mix"].append((n, pt))
+            a["z"][pt] = z
         rows = []
         for pid, a in arse.items():
-            mix = sorted(a["mix"], reverse=True)
-            usage = " · ".join(f"{pt} {round(100*n/a['n'])}%" for n, pt in mix[:4])
+            per_pt = [a["z"].get(pt) for pt in pts_sorted]
             rows.append([a["name"], pid, a["n"],
-                         round(a["wsum"] / a["n"], 3), usage])
+                         round(a["wsum"] / a["n"], 3), per_pt])
         rows.sort(key=lambda x: -x[3])
         with open(os.path.join(out_dir, f"lb_ALL_{year}.json"), "w") as f:
             json.dump(rows, f, separators=(",", ":"))
