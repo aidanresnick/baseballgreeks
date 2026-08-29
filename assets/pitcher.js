@@ -146,8 +146,10 @@
                hb: r[ROW.HB], vx: r[ROW.VX],
                crvV: r[ROW.CV], crvZ: r[ROW.CZ], crvX: r[ROW.CX] };
     });
-    const cur = series[series.length - 1];
-    const prev = series.length > 1 ? series[series.length - 2] : null;
+    let si = seasons.indexOf(SEASON);
+    if (si < 0) si = series.length - 1;
+    const cur = series[si];
+    const prev = si > 0 ? series[si - 1] : null;
     const d = prev ? cur.z - prev.z : null;
     const deltaHtml = d === null ? ''
       : `<div class="delta ${d >= 0 ? 'up' : 'down'}">${d >= 0 ? '▲' : '▼'} ${fmtZ(d)} vs ${prev.year}</div>`;
@@ -215,35 +217,22 @@
     return ALLBOARD[year].find(r => r[1] === id) || null;
   }
 
-  async function show(id) {
-    const p = await playerData(id);
-    const box = document.getElementById('player');
-    if (!p) { box.innerHTML = '<div class="empty">Pitcher not found.</div>'; return; }
-    PLAYER = p;
+  let SEASON = null, PLAYER_ID = null;
 
-    const pts = PT_ORDER.filter(pt => p.pts[pt]);
-    const latestN = pt => {
-      const yrs = Object.keys(p.pts[pt]).sort();
-      return p.pts[pt][yrs[yrs.length - 1]][ROW.N];
-    };
-    const defaultPt = [...pts].sort((a, b) => latestN(b) - latestN(a))[0];
-    const allYears = [...new Set(pts.flatMap(pt => Object.keys(p.pts[pt])))].sort();
-    const latestYear = allYears[allYears.length - 1];
-
-    // arsenal summary: latest-season stuff + greeks per pitch type
+  async function renderSeason(year) {
+    SEASON = year;
+    const p = PLAYER;
+    const pts = PT_ORDER.filter(pt => p.pts[pt] && p.pts[pt][year]);
     const cur = pts
-      .filter(pt => p.pts[pt][latestYear])
-      .map(pt => ({ pt, r: p.pts[pt][latestYear] }))
+      .map(pt => ({ pt, r: p.pts[pt][year] }))
       .sort((a, b) => b.r[ROW.N] - a.r[ROW.N]);
-    const ov = await overallRow(id, latestYear);
+    const ov = await overallRow(PLAYER_ID, year);
     const ovHtml = ov
       ? `<div class="ovline"><span class="ovz">${fmtZ(ov[3])}</span> overall zStuff
-         &middot; ${fmtN(ov[2])} pitches &middot; ${latestYear}</div>`
-      : `<div class="ovline">${latestYear}</div>`;
+         &middot; ${fmtN(ov[2])} pitches &middot; ${year}</div>`
+      : `<div class="ovline">${year}</div>`;
 
-    box.innerHTML = `
-      <div class="player-head"><h2>${p.name}</h2>
-        <div class="meta">${allYears[0]}–${allYears[allYears.length - 1]}</div></div>
+    document.getElementById('season-block').innerHTML = `
       <div class="ptcard summary" style="--pt:var(--accent)">
         <div class="cardtop">
           <div>
@@ -285,7 +274,32 @@
     document.querySelectorAll('.sumtab tbody tr').forEach(tr => {
       tr.onclick = () => renderCard(tr.dataset.pt);
     });
-    renderCard(defaultPt);
+    renderCard(cur.length ? cur[0].pt : null);
+  }
+
+  async function show(id) {
+    const p = await playerData(id);
+    const box = document.getElementById('player');
+    if (!p) { box.innerHTML = '<div class="empty">Pitcher not found.</div>'; return; }
+    PLAYER = p;
+    PLAYER_ID = id;
+
+    const pts = PT_ORDER.filter(pt => p.pts[pt]);
+    const allYears = [...new Set(pts.flatMap(pt => Object.keys(p.pts[pt])))].sort();
+    const latestYear = allYears[allYears.length - 1];
+
+    box.innerHTML = `
+      <div class="player-head headrow">
+        <div><h2>${p.name}</h2>
+          <div class="meta">${allYears[0]}–${latestYear}</div></div>
+        <select id="pseason" aria-label="Season">
+          ${[...allYears].reverse().map(y => `<option value="${y}">${y}</option>`).join('')}
+        </select>
+      </div>
+      <div id="season-block"></div>`;
+
+    document.getElementById('pseason').onchange = e => renderSeason(e.target.value);
+    renderSeason(latestYear);
   }
 
   const id = new URLSearchParams(location.search).get('id');

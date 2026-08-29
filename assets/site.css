@@ -356,3 +356,5 @@ footer p { margin: 4px 0; }
 .sumtab thead th { position: static; }
 .sumtab td .ptchip { font-size: 13.5px; }
 .sumtab tbody td { padding: 8px 11px; }
+
+.headrow { display: flex; align-items: flex-end; gap: 16px; justify-content: space-between; flex-wrap: wrap; }
