@@ -90,8 +90,9 @@
       const seasons = Object.keys(p.pts[pt]).sort();
       const series = seasons.map(yr => {
         const r = p.pts[pt][yr];
-        return { year: yr, n: r[ROW.N], z: r[ROW.Z], xrv: r[ROW.XRV],
-                 gv: r[ROW.GV], gdz: r[ROW.GDZ], gdx: r[ROW.GDX] };
+        return { year: yr, n: r[ROW.N], z: r[ROW.Z], velo: r[ROW.VELO],
+                 d: r[ROW.D], g: r[ROW.G], ivb: r[ROW.IVB], vz: r[ROW.VZ],
+                 hb: r[ROW.HB], vx: r[ROW.VX] };
       });
       const cur = series[series.length - 1];
       const prev = series.length > 1 ? series[series.length - 2] : null;
@@ -102,17 +103,21 @@
       html += `<div class="ptcard" style="--pt:${ptColor(pt)}">
         <div class="head">
           <span class="ptchip"><span class="dot"></span>${PT_NAMES[pt]}</span>
-          <span class="season">${cur.year} &middot; ${fmtN(cur.n)} pitches</span>
+          <span class="season">${cur.year} &middot; ${fmtN(cur.n)} pitches &middot;
+            ${cur.velo.toFixed(1)} mph &middot; ride ${cur.ivb.toFixed(1)}&Prime; &middot;
+            sweep ${cur.hb.toFixed(1)}&Prime;</span>
         </div>
         <div class="tiles">
           <div class="tile"><div class="lbl">zStuff</div>
             <div class="val">${fmtZ(cur.z)}</div>${deltaHtml}</div>
-          <div class="tile"><div class="lbl">Velo greek</div>
-            <div class="val">${fmtG(cur.gv)}</div><div class="delta">per +1 mph</div></div>
-          <div class="tile"><div class="lbl">Vert greek</div>
-            <div class="val">${fmtG(cur.gdz)}</div><div class="delta">per +1 in</div></div>
-          <div class="tile"><div class="lbl">Horz greek</div>
-            <div class="val">${fmtG(cur.gdx)}</div><div class="delta">per +1 in</div></div>
+          <div class="tile"><div class="lbl">Delta</div>
+            <div class="val">${fmtG(cur.d)}</div><div class="delta">per +1 mph</div></div>
+          <div class="tile"><div class="lbl">Gamma</div>
+            <div class="val">${fmtG(cur.g)}</div><div class="delta">per +1 mph&sup2;</div></div>
+          <div class="tile"><div class="lbl">Vega-Z</div>
+            <div class="val">${fmtG(cur.vz)}</div><div class="delta">per +1 in</div></div>
+          <div class="tile"><div class="lbl">Vega-X</div>
+            <div class="val">${fmtG(cur.vx)}</div><div class="delta">per +1 in</div></div>
         </div>
         ${series.length > 1 ? `<div class="spark">${sparkline(pt, seasons, series)}</div>` : ''}
       </div>`;

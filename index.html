@@ -21,8 +21,10 @@
 <div class="wrap">
   <h1 id="title">zStuff Leaderboard</h1>
   <p class="sub">Pitch quality graded from physical characteristics alone, z-scored within
-    season &times; pitch type. <span class="hint">Greeks are the change in zStuff per +1 mph or
-    +1 inch of movement, evaluated along the pitch manifold.</span></p>
+    season &times; pitch type. <span class="hint">Greeks in xRV &times; 1000: Delta per +1 mph,
+    Gamma per +1 mph&sup2;, Vegas per +1 inch of ride/sweep &mdash; evaluated along the pitch
+    manifold. Ride and Sweep are movement relative to the release-slot expectation
+    (sweep: + cut, &minus; run).</span></p>
 
   <div class="controls">
     <div class="seg" id="ptseg"></div>
@@ -45,10 +47,13 @@
           <th class="l" data-k="name">Pitcher</th>
           <th data-k="n">Pitches</th>
           <th data-k="z" title="Stuff grade: z-score within season × pitch type">zStuff</th>
-          <th data-k="xrv" title="Count-neutral xRV per pitch (model target)">xRV / pitch</th>
-          <th data-k="gv" title="Change in zStuff per +1 mph, along the manifold">Velo greek</th>
-          <th data-k="gdz" title="Change in zStuff per +1 inch of vertical movement">Vert greek</th>
-          <th data-k="gdx" title="Change in zStuff per +1 inch of horizontal movement">Horz greek</th>
+          <th class="grp" data-k="velo" title="Average release speed (mph)">Velo</th>
+          <th data-k="d" title="Δ — change in stuff per +1 mph, along the manifold">Delta</th>
+          <th data-k="g" title="Γ — change in delta per +1 mph (curvature)">Gamma</th>
+          <th class="grp" data-k="ivb" title="Vertical movement vs slot expectation (inches, ride-positive)">Ride</th>
+          <th data-k="vz" title="ν_z — change in stuff per +1 inch of ride">Vega-Z</th>
+          <th class="grp" data-k="hb" title="Horizontal movement vs slot expectation (inches, glove-side positive: + cut, − run)">Sweep</th>
+          <th data-k="vx" title="ν_x — change in stuff per +1 inch of sweep">Vega-X</th>
         </tr></thead>
         <tbody></tbody>
       </table>
@@ -62,7 +67,8 @@
      outcomes, counts, or location. Greeks are analytic sensitivities of the grade at each
      pitcher's average pitch. Higher is better for the pitcher throughout.</p>
   <p>Data: MLB Statcast via Baseball Savant, 2020&ndash;2026. A project by
-     <a href="https://aidanresnick.com" style="color:var(--ink-2)">Aidan Resnick</a>.</p>
+     <a href="https://aidanresnick.com" style="color:var(--ink-2)">Aidan Resnick</a> &middot;
+     <a href="mailto:aidan.j.resnick@gmail.com" style="color:var(--ink-2)">aidan.j.resnick@gmail.com</a>.</p>
 </footer>
 
 <script src="assets/common.js"></script>

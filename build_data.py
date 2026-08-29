@@ -5,12 +5,14 @@ Usage: python3 build_data.py /path/to/baseball/output
 
 Emits, under data/:
   meta.json                 pitch types, seasons, per-file row counts
-  lb_{PT}_{Y}.json          leaderboard rows [name, id, n, z, xrv, gv, gdz, gdx]
+  lb_{PT}_{Y}.json          leaderboard rows [name, id, n, z, velo, delta, gamma,
+                            ivb, vegaZ, hb, vegaX]
   players_index.json        [[display_name, id, shard], ...] for search
-  players/{shard}.json      {id: {"name": .., "pts": {PT: {year: [n,z,xrv,gv,gdz,gdx]}}}}
+  players/{shard}.json      {id: {"name": .., "pts": {PT: {year: <same 9-value tail>}}}}
 
-Greeks exported are the manifold zStuff-unit columns (greekmz_*): the change in
-zStuff per +1 mph / +1 inch moving along the pitch manifold.
+Greeks are the on-manifold columns in xRV units x 1000 (paper naming):
+delta = greekm_velo, gamma = gammam_velo, vega-z = greekm_dz_in,
+vega-x = greekm_dx_in.
 """
 import csv
 import glob
@@ -55,10 +57,13 @@ def main(src: str) -> None:
                 row = [
                     int(r["n_pt"]),
                     round(float(r["zStuff"]), 3),
-                    round(float(r["mean_xRV"]), 4),
-                    round(float(r["greekmz_velo"]), 3),
-                    round(float(r["greekmz_dz_in"]), 3),
-                    round(float(r["greekmz_dx_in"]), 3),
+                    round(float(r["velo"]), 1),
+                    round(float(r["greekm_velo"]) * 1000, 2),
+                    round(float(r["gammam_velo"]) * 1000, 3),
+                    round(float(r["dz_in"]), 1),
+                    round(float(r["greekm_dz_in"]) * 1000, 2),
+                    round(float(r["dx_in"]), 1),
+                    round(float(r["greekm_dx_in"]) * 1000, 2),
                 ]
                 name = display_name(r["name"])
                 lb.append([name, pid] + row)

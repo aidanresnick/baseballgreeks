@@ -18,9 +18,11 @@ async function getJSON(path) {
   return r.json();
 }
 
-// Row layout in every data file: [name?, id?, n, z, xrv, gVelo, gVert, gHorz]
-// Leaderboard rows carry name+id in front; player rows are the 6-value tail.
-const ROW = { N: 0, Z: 1, XRV: 2, GV: 3, GDZ: 4, GDX: 5 };
+// Row layout in every data file:
+// [name?, id?, n, z, velo, delta, gamma, ivb, vegaZ, hb, vegaX]
+// (greeks in xRV units x 1000; velo mph; ivb/hb inches, hb glove-side +).
+// Leaderboard rows carry name+id in front; player rows are the 9-value tail.
+const ROW = { N: 0, Z: 1, VELO: 2, D: 3, G: 4, IVB: 5, VZ: 6, HB: 7, VX: 8 };
 
 function tooltipEl() {
   let t = document.querySelector('.tooltip');

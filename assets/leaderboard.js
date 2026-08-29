@@ -62,7 +62,7 @@
     render();
   }
 
-  const KEYS = { name: 0, n: 2, z: 3, xrv: 4, gv: 5, gdz: 6, gdx: 7 };
+  const KEYS = { name: 0, n: 2, z: 3, velo: 4, d: 5, g: 6, ivb: 7, vz: 8, hb: 9, vx: 10 };
 
   function render() {
     let rows = state.rows.filter(r => r[2] >= state.minn);
@@ -85,17 +85,20 @@
     const Z_SPAN = 3; // bar full-scale at |z| = 3
     tb.innerHTML = rows.map(r => {
       const z = r[3];
-      const w = Math.min(Math.abs(z) / Z_SPAN, 1) * 48;
+      const w = Math.min(Math.abs(z) / Z_SPAN, 1) * 36;
       const bar = `<span class="zbar"><i class="${z >= 0 ? 'pos' : 'neg'}" style="width:${w}px"></i></span>`;
       return `<tr data-id="${r[1]}">
         <td class="rank l">${rank.get(r[1])}</td>
         <td class="name l">${r[0]}</td>
         <td>${fmtN(r[2])}</td>
         <td class="z">${fmtZ(z)}${bar}</td>
-        <td>${r[4].toFixed(3)}</td>
+        <td class="grp">${r[4].toFixed(1)}</td>
         <td>${fmtG(r[5])}</td>
         <td>${fmtG(r[6])}</td>
-        <td>${fmtG(r[7])}</td>
+        <td class="grp">${r[7].toFixed(1)}</td>
+        <td>${fmtG(r[8])}</td>
+        <td class="grp">${r[9].toFixed(1)}</td>
+        <td>${fmtG(r[10])}</td>
       </tr>`;
     }).join('');
     document.getElementById('empty').hidden = rows.length > 0;
