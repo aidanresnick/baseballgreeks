@@ -36,13 +36,6 @@
         that same scale.</div>
     </div>
 
-    <div class="gitem">
-      <div class="gterm">xRV</div>
-      <div class="gdef">Expected run value — the model's target. Every pitch is
-        valued at the league-average run value of its outcome, except batted
-        balls, which are valued by their physics-expected outcome. Count-neutral
-        and pitcher-oriented: higher is better for the pitcher.</div>
-    </div>
 
     <div class="gitem">
       <div class="gterm">Delta <span class="gsym">Δ</span></div>
@@ -77,57 +70,6 @@
         one means more run helps.</div>
     </div>
 
-    <div class="gitem">
-      <div class="gterm">IVB</div>
-      <div class="gdef">Induced vertical break: the vertical movement the pitch
-        generates beyond gravity, measured release-to-plate, in inches,
-        ride-positive. Computed from the tracked accelerations, so it is the
-        same concept as public IVB figures but can differ slightly from
-        Savant's numbers, which use a different measurement window.</div>
-    </div>
-
-    <div class="gitem">
-      <div class="gterm">HB</div>
-      <div class="gdef">Horizontal break, release-to-plate, in inches,
-        glove-side positive: positive HB is cut, negative HB is run. Lefties
-        are mirrored so the convention reads the same for both hands.</div>
-    </div>
-
-    <div class="gitem">
-      <div class="gterm">The manifold</div>
-      <div class="gdef">Pitch traits do not move independently: when a pitcher
-        adds velocity, his movement and flight time shift with it. The manifold
-        is that empirical co-movement, measured within pitcher, season over
-        season, per pitch type. Greeks on this site are priced along it, so a
-        greek answers "what is a <em>real</em> mile per hour worth," not "what
-        would a physically impossible isolated change be worth."</div>
-    </div>
-
-    <div class="gitem">
-      <div class="gterm">Overall zStuff</div>
-      <div class="gdef">The arsenal grade on the Overall leaderboard: the
-        usage-weighted average of (zStuff + pitch-type baseline) across a
-        pitcher's offerings. The baseline is how the pitch type's league-average
-        xRV compares to all pitches, in zStuff units — so a +2 cutter outranks a
-        +2 four-seam by exactly the margin cutters out-grade four-seams per
-        pitch league-wide.</div>
-    </div>
-
-    <div class="gitem">
-      <div class="gterm">Stuff curves</div>
-      <div class="gdef">On the pitcher cards: the model's value surface sliced
-        through that pitcher's own operating point along each trait, in zStuff
-        units, over &plusmn;3 mph or &plusmn;3 inches. The marker is where the
-        pitch actually lives; the greek columns are the slopes at that marker.</div>
-    </div>
-
-    <div class="gitem">
-      <div class="gterm">Pitches</div>
-      <div class="gdef">True pitch counts — every tracked pitch of the type
-        thrown that season, with no minimum. Grades and greeks are computed for
-        any book the filter allows; the count is always shown so sample size is
-        never hidden.</div>
-    </div>
   </div>
 </div>
 
