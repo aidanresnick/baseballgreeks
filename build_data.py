@@ -43,6 +43,7 @@ def main(src: str) -> None:
     pts, years = set(), set()
     players = {}          # id -> {"name":, "pts": {pt: {year: row}}}
     counts = {}
+    master = []           # (pt, year, pid, name, n, z, mean_xrv) for arsenal calc
 
     for fp in files:
         m = re.search(r"stuff_xns_([A-Z]+)_(\d{4})\.csv$", fp)
@@ -72,10 +73,64 @@ def main(src: str) -> None:
                 lb.append([name, pid] + row)
                 p = players.setdefault(pid, {"name": name, "pts": {}})
                 p["pts"].setdefault(pt, {})[year] = row + curves
+                master.append((pt, year, pid, name, row[0], row[1],
+                               float(r["mean_xRV"])))
         lb.sort(key=lambda x: -x[3])
         with open(os.path.join(out_dir, f"lb_{pt}_{year}.json"), "w") as f:
             json.dump(lb, f, separators=(",", ":"))
         counts[f"{pt}_{year}"] = len(lb)
+
+    # ── overall arsenal leaderboards ─────────────────────────────────────
+    # Canonical formula (app_csw_v2.py pt_baselines): baseline_pt = (pooled
+    # pitch-weighted league mean xRV of the PT − grand mean) / beta, where
+    # beta = pitch-weighted within-(PT × season) slope of pitcher mean_xRV on
+    # zStuff. Arsenal = usage-weighted mean of (zStuff + baseline_pt) over the
+    # pitcher's pitch types. Baseline/beta fit on the m50 population; arsenal
+    # includes every book down to 10 pitches.
+    ref = [m for m in master if m[4] >= 50]
+    num = den = 0.0
+    from collections import defaultdict
+    groups = defaultdict(list)
+    for m in ref:
+        groups[(m[0], m[1])].append(m)
+    for g in groups.values():
+        w = [m[4] for m in g]
+        sw = sum(w)
+        zbar = sum(wi * m[5] for wi, m in zip(w, g)) / sw
+        xbar = sum(wi * m[6] for wi, m in zip(w, g)) / sw
+        num += sum(wi * (m[5] - zbar) * (m[6] - xbar) for wi, m in zip(w, g))
+        den += sum(wi * (m[5] - zbar) ** 2 for wi, m in zip(w, g))
+    beta = num / den
+    sw_all = sum(m[4] for m in ref)
+    mu_all = sum(m[4] * m[6] for m in ref) / sw_all
+    by_pt = defaultdict(list)
+    for m in ref:
+        by_pt[m[0]].append(m)
+    baselines = {}
+    for pt, g in by_pt.items():
+        sw = sum(m[4] for m in g)
+        baselines[pt] = (sum(m[4] * m[6] for m in g) / sw - mu_all) / beta
+
+    for year in sorted(years):
+        arse = defaultdict(lambda: {"name": "", "n": 0, "wsum": 0.0, "mix": []})
+        for pt, yr, pid, name, n, z, _x in master:
+            if yr != year:
+                continue
+            a = arse[pid]
+            a["name"] = name
+            a["n"] += n
+            a["wsum"] += n * (z + baselines[pt])
+            a["mix"].append((n, pt))
+        rows = []
+        for pid, a in arse.items():
+            mix = sorted(a["mix"], reverse=True)
+            usage = " · ".join(f"{pt} {round(100*n/a['n'])}%" for n, pt in mix[:4])
+            rows.append([a["name"], pid, a["n"],
+                         round(a["wsum"] / a["n"], 3), usage])
+        rows.sort(key=lambda x: -x[3])
+        with open(os.path.join(out_dir, f"lb_ALL_{year}.json"), "w") as f:
+            json.dump(rows, f, separators=(",", ":"))
+        counts[f"ALL_{year}"] = len(rows)
 
     shards = {s: {} for s in range(SHARDS)}
     index = []
@@ -98,6 +153,7 @@ def main(src: str) -> None:
                 "counts": counts,
                 "players": len(players),
                 "curve_grid": {"start": -3.0, "step": 0.5, "n": 13},
+                "baselines": {k: round(v, 3) for k, v in baselines.items()},
             },
             f,
             separators=(",", ":"),

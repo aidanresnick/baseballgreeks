@@ -6,7 +6,7 @@
 <title>Baseball Greeks — zStuff Leaderboards</title>
 <meta name="description" content="zStuff leaderboards and pitcher greeks: pitch quality graded from physical characteristics alone, with sensitivities to velocity and movement.">
 <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="assets/site.css?v=6">
+<link rel="stylesheet" href="assets/site.css?v=7">
 </head>
 <body>
 
@@ -29,9 +29,10 @@
     <div class="spacer"></div>
     <select id="season" aria-label="Season"></select>
     <select id="minn" aria-label="Minimum pitches">
+      <option value="10" selected>10+ pitches</option>
       <option value="50">50+ pitches</option>
       <option value="100">100+ pitches</option>
-      <option value="200" selected>200+ pitches</option>
+      <option value="200">200+ pitches</option>
       <option value="500">500+ pitches</option>
     </select>
     <input type="search" id="q" placeholder="Filter pitchers…" aria-label="Filter pitchers">
@@ -69,7 +70,7 @@
      <a href="mailto:aidan.j.resnick@gmail.com" style="color:var(--ink-2)">aidan.j.resnick@gmail.com</a>.</p>
 </footer>
 
-<script src="assets/common.js?v=6"></script>
-<script src="assets/leaderboard.js?v=6"></script>
+<script src="assets/common.js?v=7"></script>
+<script src="assets/leaderboard.js?v=7"></script>
 </body>
 </html>
