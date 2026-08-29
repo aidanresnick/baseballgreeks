@@ -358,3 +358,13 @@ footer p { margin: 4px 0; }
 .sumtab tbody td { padding: 8px 11px; }
 
 .headrow { display: flex; align-items: flex-end; gap: 16px; justify-content: space-between; flex-wrap: wrap; }
+
+/* ── distribution hero ────────────────────────────────── */
+#hero { margin: 4px 0 16px; }
+.hero-panel {
+  background: var(--surface);
+  border: 1px solid var(--grid);
+  border-radius: 14px;
+  padding: 10px 14px 4px;
+}
+.hero-panel svg { display: block; width: 100%; height: auto; }

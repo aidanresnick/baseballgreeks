@@ -95,10 +95,60 @@
 
   const KEYS = { name: 0, n: 2, z: 3, velo: 4, d: 5, g: 6, ivb: 7, vz: 8, hb: 9, vx: 10 };
 
+  // hero: smooth density of the current board's zStuff, top pitcher labeled
+  function renderHero(rows) {
+    const el = document.getElementById('hero');
+    if (!el) return;
+    if (rows.length < 8) { el.innerHTML = ''; return; }
+    const W = 1200, H = 150, PL = 20, PR = 20, PT_ = 24, PB = 26;
+    const LO = -3.5, HI = 3.5, NB = 70;
+    const bins = new Array(NB).fill(0);
+    rows.forEach(r => {
+      const z = Math.max(LO, Math.min(HI, r[3]));
+      bins[Math.min(NB - 1, Math.floor((z - LO) / (HI - LO) * NB))]++;
+    });
+    // gaussian smooth
+    const K = [1, 4, 7, 4, 1], KS = 17;
+    const sm = bins.map((_, i) =>
+      K.reduce((a, k, j) => a + k * (bins[i + j - 2] || 0), 0) / KS);
+    const peak = Math.max(...sm);
+    const x = i => PL + (W - PL - PR) * i / (NB - 1);
+    const xz = z => PL + (W - PL - PR) * (z - LO) / (HI - LO);
+    const y = v => PT_ + (H - PT_ - PB) * (1 - v / peak);
+    const line = sm.map((v, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join('');
+    const area = `${line} L${x(NB - 1).toFixed(1)},${H - PB} L${PL},${H - PB} Z`;
+    const top = [...rows].sort((a, b) => b[3] - a[3])[0];
+    const topX = Math.min(xz(top[3]), W - PR - 4);
+    const name = top[0].split(' ').slice(-1)[0];
+    const anchor = topX > W - 190 ? 'end' : 'start';
+    const ticks = [-3, -2, -1, 0, 1, 2, 3];
+    el.innerHTML = `<div class="hero-panel"><svg viewBox="0 0 ${W} ${H}">
+      <text x="${PL}" y="15" fill="var(--muted)" font-size="12" font-weight="600">
+        zStuff Distribution — ${document.getElementById('title').textContent}</text>
+      <line x1="${PL}" x2="${W - PR}" y1="${H - PB}" y2="${H - PB}"
+        stroke="var(--baseline)" stroke-width="1"/>
+      ${ticks.map(t => `<text x="${xz(t)}" y="${H - 9}" fill="var(--muted)" font-size="10.5"
+        text-anchor="middle">${t > 0 ? '+' : ''}${t}</text>
+        <line x1="${xz(t)}" x2="${xz(t)}" y1="${H - PB}" y2="${H - PB + 4}"
+          stroke="var(--baseline)" stroke-width="1"/>`).join('')}
+      <line x1="${xz(0)}" x2="${xz(0)}" y1="${PT_}" y2="${H - PB}"
+        stroke="var(--grid)" stroke-width="1"/>
+      <path d="${area}" fill="var(--accent)" opacity="0.1"/>
+      <path d="${line}" fill="none" stroke="var(--accent)" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="${topX.toFixed(1)}" cy="${(H - PB - 7)}" r="4.5" fill="var(--accent)"
+        stroke="var(--surface)" stroke-width="2"/>
+      <text x="${(topX + (anchor === 'end' ? -9 : 9)).toFixed(1)}" y="${H - PB - 12}"
+        fill="var(--ink-2)" font-size="11.5" font-weight="600"
+        text-anchor="${anchor}">${name} ${fmtZ(top[3])}</text>
+    </svg></div>`;
+  }
+
   function render() {
     const isAll = state.pt === 'ALL';
     let rows = state.rows.filter(r => r[2] >= state.minn);
     if (state.q) rows = rows.filter(r => r[0].toLowerCase().includes(state.q));
+    renderHero(rows);
 
     // rank by zStuff regardless of current sort
     const rank = new Map();
