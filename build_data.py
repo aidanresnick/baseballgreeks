@@ -118,7 +118,10 @@ def main(src: str) -> None:
         for r in csv.DictReader(f):
             true_counts[(r["season"], int(r["pitcher"]), r["pitch_type"])] = int(r["n"])
 
-    pts_sorted = sorted(pts)
+    league = defaultdict(int)
+    for (_, _, pt), n in true_counts.items():
+        league[pt] += n
+    pts_sorted = sorted(pts, key=lambda p: -league[p])
     for year in sorted(years):
         arse = defaultdict(lambda: {"name": "", "wsum": 0.0, "gn": 0, "z": {}})
         for pt, yr, pid, name, n, z, _x in master:
@@ -160,7 +163,7 @@ def main(src: str) -> None:
     with open(os.path.join(out_dir, "meta.json"), "w") as f:
         json.dump(
             {
-                "pts": sorted(pts),
+                "pts": pts_sorted,
                 "years": sorted(years),
                 "counts": counts,
                 "players": len(players),
