@@ -99,7 +99,7 @@
   function renderHero(rows) {
     const el = document.getElementById('hero');
     if (!el) return;
-    if (rows.length < 8) { el.innerHTML = ''; return; }
+    if (state.pt === 'ALL' || rows.length < 8) { el.innerHTML = ''; return; }
     const W = 1200, H = 150, PL = 20, PR = 20, PT_ = 24, PB = 26;
     const LO = -3.5, HI = 3.5, NB = 70;
     const bins = new Array(NB).fill(0);
