@@ -336,3 +336,15 @@ footer {
   border-top: 1px solid var(--grid);
 }
 footer p { margin: 4px 0; }
+
+/* ── glossary ─────────────────────────────────────────── */
+.gloss { display: grid; gap: 12px; max-width: 860px; }
+.gitem {
+  background: var(--surface);
+  border: 1px solid var(--grid);
+  border-radius: 12px;
+  padding: 16px 20px;
+}
+.gterm { font-weight: 700; font-size: 16px; margin-bottom: 5px; }
+.gterm .gsym { color: var(--accent); font-weight: 600; margin-left: 6px; }
+.gdef { color: var(--ink-2); font-size: 14.5px; line-height: 1.55; }

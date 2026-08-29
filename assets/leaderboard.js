@@ -4,7 +4,7 @@
   const state = {
     pt: 'ALL',
     year: meta.years[meta.years.length - 1],
-    minn: 10,
+    minn: 1,
     q: '',
     sort: 'z',
     dir: -1,
@@ -94,12 +94,6 @@
   }
 
   const KEYS = { name: 0, n: 2, z: 3, velo: 4, d: 5, g: 6, ivb: 7, vz: 8, hb: 9, vx: 10 };
-  const Z_SPAN = 3; // bar full-scale at |z| = 3
-
-  const zbar = z => {
-    const w = Math.min(Math.abs(z) / Z_SPAN, 1) * 36;
-    return `<span class="zbar"><i class="${z >= 0 ? 'pos' : 'neg'}" style="width:${w}px"></i></span>`;
-  };
 
   function render() {
     const isAll = state.pt === 'ALL';
@@ -133,7 +127,7 @@
           <td class="rank l">${rank.get(r[1])}</td>
           <td class="name l">${r[0]}</td>
           <td>${fmtN(r[2])}</td>
-          <td class="z">${fmtZ(r[3])}${zbar(r[3])}</td>
+          <td class="z">${fmtZ(r[3])}</td>
           ${r[4].map((v, i) => `<td ${i === 0 ? 'class="grp"' : ''}>${
             v == null ? '<span class="none">–</span>'
               : `${v[0] == null ? '<span class="none">–</span>' : fmtZ(v[0])}<span class="cnt">${fmtN(v[1])}</span>`
@@ -143,7 +137,7 @@
           <td class="rank l">${rank.get(r[1])}</td>
           <td class="name l">${r[0]}</td>
           <td>${fmtN(r[2])}</td>
-          <td class="z">${fmtZ(r[3])}${zbar(r[3])}</td>
+          <td class="z">${fmtZ(r[3])}</td>
           <td class="grp">${r[4].toFixed(1)}</td>
           <td>${fmtG(r[5])}</td>
           <td>${fmtG(r[6])}</td>

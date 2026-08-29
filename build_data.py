@@ -86,7 +86,7 @@ def main(src: str) -> None:
     # beta = pitch-weighted within-(PT × season) slope of pitcher mean_xRV on
     # zStuff. Arsenal = usage-weighted mean of (zStuff + baseline_pt) over the
     # pitcher's pitch types. Baseline/beta fit on the m50 population; arsenal
-    # includes every book down to 10 pitches.
+    # includes every book down to a single pitch.
     ref = [m for m in master if m[4] >= 50]
     num = den = 0.0
     from collections import defaultdict
