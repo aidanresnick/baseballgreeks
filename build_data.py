@@ -87,7 +87,9 @@ def main(src: str) -> None:
     # zStuff. Arsenal = usage-weighted mean of (zStuff + baseline_pt) over the
     # pitcher's pitch types. Baseline/beta fit on the m50 population; arsenal
     # includes every book down to a single pitch.
-    ref = [m for m in master if m[4] >= 50]
+    # baselines/beta stay a FIT-era quantity (pooled 2020-2026), applied to
+    # every displayed season
+    ref = [m for m in master if m[4] >= 50 and m[1] >= "2020"]
     num = den = 0.0
     from collections import defaultdict
     groups = defaultdict(list)

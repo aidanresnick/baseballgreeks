@@ -4,7 +4,7 @@
   const state = {
     pt: 'ALL',
     year: meta.years[meta.years.length - 1],
-    minn: 1,
+    minn: 100,
     q: '',
     sort: 'z',
     dir: -1,
