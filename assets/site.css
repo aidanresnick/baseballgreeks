@@ -229,9 +229,9 @@ td.z { color: var(--ink); font-weight: 600; }
   background: var(--surface);
   border: 1px solid var(--grid);
   border-top: 3px solid var(--pt, var(--accent));
-  border-radius: 14px;
-  padding: 16px 20px 16px;
-  margin-top: 16px;
+  border-radius: 16px;
+  padding: 22px 26px 22px;
+  margin-top: 14px;
 }
 
 .cardtop {
@@ -269,32 +269,42 @@ td.z { color: var(--ink); font-weight: 600; }
 
 .tiles {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
 }
 .tile {
   background: var(--surface-2);
-  border-radius: 10px;
-  padding: 10px 12px;
+  border-radius: 12px;
+  padding: 13px 16px;
 }
-.tile .lbl { font-size: 12px; color: var(--muted); }
-.tile .val { font-size: 22px; font-weight: 650; margin-top: 2px; }
+.tile .lbl { font-size: 12.5px; color: var(--muted); }
+.tile .val { font-size: 26px; font-weight: 650; margin-top: 3px; }
 .tile .delta { font-size: 12.5px; margin-top: 1px; color: var(--muted); }
 .tile .delta.up { color: var(--good); }
 .tile .delta.down { color: var(--neg); }
 
 .curves {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 10px;
-  margin-top: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 12px;
+  margin-top: 16px;
 }
 .curve {
   background: var(--surface-2);
-  border-radius: 10px;
-  padding: 4px 2px 0;
+  border-radius: 12px;
+  padding: 8px 8px 4px;
 }
 .curve svg { display: block; width: 100%; height: auto; }
+
+.history {
+  background: var(--surface-2);
+  border-radius: 12px;
+  padding: 8px 8px 4px;
+  margin-top: 12px;
+}
+.history svg { display: block; width: 100%; height: auto; }
+
+.pttabs { margin: 6px 0 4px; }
 
 .spark { margin-top: 14px; }
 .spark svg { display: block; width: 100%; height: 84px; overflow: visible; }
