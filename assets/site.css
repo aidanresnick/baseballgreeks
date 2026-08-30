@@ -369,3 +369,16 @@ footer p { margin: 4px 0; }
 
 .headrow { display: flex; align-items: flex-end; gap: 16px; justify-content: space-between; flex-wrap: wrap; }
 
+
+.dlbtn {
+  margin-top: 6px;
+  background: var(--surface-2);
+  color: var(--ink-2);
+  border: 1px solid var(--grid);
+  border-radius: 7px;
+  padding: 3px 10px;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.dlbtn:hover { color: var(--ink); border-color: var(--accent); }

@@ -177,7 +177,8 @@
           </div>
         </div>
         <div class="cardbrand"><span class="delta">Δ</span> Baseball Greeks
-          <div class="site">baseballgreeks.com</div></div>
+          <div class="site">baseballgreeks.com</div>
+          <button class="dlbtn no-export" id="dl-card" title="Download card as PNG">⤓ PNG</button></div>
       </div>
       <div class="tiles">
         <div class="tile"><div class="lbl">zStuff</div>
@@ -198,6 +199,11 @@
     document.querySelectorAll('#pttabs button').forEach(b =>
       b.classList.toggle('on', b.dataset.pt === pt));
 
+    const dlC = document.getElementById('dl-card');
+    if (dlC) dlC.onclick = () => downloadCard(
+      document.querySelector('#card .ptcard'),
+      `${slug(PLAYER.name)}-${pt.toLowerCase()}-${SEASON}.png`,
+      new URLSearchParams(location.search).has('dltest'));
     document.querySelectorAll('#card circle[data-year]').forEach(c => {
       c.addEventListener('mousemove', e => showTip(
         `<b>${c.dataset.year}</b> &middot; zStuff ${fmtZ(+c.dataset.z)} &middot; ${fmtN(+c.dataset.n)} pitches`,
@@ -240,7 +246,8 @@
             ${ovHtml}
           </div>
           <div class="cardbrand"><span class="delta">Δ</span> Baseball Greeks
-            <div class="site">baseballgreeks.com</div></div>
+            <div class="site">baseballgreeks.com</div>
+            <button class="dlbtn no-export" id="dl-summary" title="Download card as PNG">⤓ PNG</button></div>
         </div>
         <div class="tablewrap"><table class="sumtab">
           <thead><tr>
@@ -274,6 +281,13 @@
     document.querySelectorAll('.sumtab tbody tr').forEach(tr => {
       tr.onclick = () => renderCard(tr.dataset.pt);
     });
+    const dlS = document.getElementById('dl-summary');
+    if (dlS) dlS.onclick = () => downloadCard(
+      document.querySelector('.ptcard.summary'),
+      `${slug(PLAYER.name)}-${SEASON}-arsenal.png`,
+      new URLSearchParams(location.search).has('dltest'));
+    if (dlS && new URLSearchParams(location.search).has('dltest'))
+      setTimeout(() => dlS.onclick(), 800);
     renderCard(cur.length ? cur[0].pt : null);
   }
 
