@@ -297,8 +297,6 @@
     };
     if (dlS && new URLSearchParams(location.search).has('dltest'))
       setTimeout(() => dlS.onclick(new Event('click')), 800);
-    const first = document.querySelector('.sumtab tbody tr[data-pt]');
-    if (first) toggleRow(first, first.dataset.pt);
   }
 
   async function show(id) {
