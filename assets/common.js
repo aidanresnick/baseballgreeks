@@ -12,7 +12,7 @@ const fmtZ = v => (v > 0 ? '+' : '') + v.toFixed(2);
 const fmtG = v => (v > 0 ? '+' : '') + v.toFixed(2);
 const fmtN = v => v.toLocaleString('en-US');
 
-const DATA_V = '22';
+const DATA_V = '23';
 async function getJSON(path) {
   const r = await fetch(path + '?v=' + DATA_V);
   if (!r.ok) throw new Error(`${path}: ${r.status}`);
@@ -63,6 +63,11 @@ async function downloadCard(el, filename, testMode) {
   };
   inline(el, clone);
   for (let i = 0; i < src.length; i++) inline(src[i], dst[i]);
+  // full-bleed export: square corners, no outer border
+  clone.style.borderRadius = '0';
+  clone.style.border = 'none';
+  clone.style.borderTop = getComputedStyle(el).borderTopWidth + ' solid ' +
+    getComputedStyle(el).borderTopColor;
   clone.querySelectorAll('.no-export').forEach(n => n.remove());
   clone.style.width = W + 'px';
   clone.style.margin = '0';
