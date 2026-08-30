@@ -137,7 +137,7 @@
 
   let PLAYER = null;
 
-  function renderCard(pt) {
+  function cardHTML(pt) {
     const seasons = Object.keys(PLAYER.pts[pt]).sort();
     const series = seasons.map(yr => {
       const r = PLAYER.pts[pt][yr];
@@ -165,7 +165,7 @@
       </div>`;
     }
 
-    document.getElementById('card').innerHTML = `<div class="ptcard" style="--pt:${ptColor(pt)}">
+    return `<div class="ptcard" style="--pt:${ptColor(pt)}">
       <div class="cardtop">
         <div>
           <div class="cardname">${PLAYER.name}</div>
@@ -178,7 +178,7 @@
         </div>
         <div class="cardbrand"><span class="delta">Δ</span> Baseball Greeks
           <div class="site">baseballgreeks.com</div>
-          <button class="dlbtn no-export" id="dl-card" title="Download card as PNG">⤓ PNG</button></div>
+          <button class="dlbtn card-dl no-export" title="Download card as PNG">⤓ PNG</button></div>
       </div>
       <div class="tiles">
         <div class="tile"><div class="lbl">zStuff</div>
@@ -195,26 +195,41 @@
       ${curvesHtml}
       ${series.length > 1 ? historyChart(pt, series) : ''}
     </div>`;
+  }
 
-    document.querySelectorAll('#pttabs button').forEach(b =>
-      b.classList.toggle('on', b.dataset.pt === pt));
-
-    const dlC = document.getElementById('dl-card');
-    if (dlC) dlC.onclick = () => downloadCard(
-      document.querySelector('#card .ptcard'),
-      `${slug(PLAYER.name)}-${pt.toLowerCase()}-${SEASON}.png`,
-      new URLSearchParams(location.search).has('dltest'));
-    document.querySelectorAll('#card circle[data-year]').forEach(c => {
+  function bindCardIn(root, pt) {
+    const dl = root.querySelector('.card-dl');
+    if (dl) dl.onclick = e => {
+      e.stopPropagation();
+      downloadCard(root.querySelector('.ptcard'),
+        `${slug(PLAYER.name)}-${pt.toLowerCase()}-${SEASON}.png`, false);
+    };
+    root.querySelectorAll('circle[data-year]').forEach(c => {
       c.addEventListener('mousemove', e => showTip(
         `<b>${c.dataset.year}</b> &middot; zStuff ${fmtZ(+c.dataset.z)} &middot; ${fmtN(+c.dataset.n)} pitches`,
         e.clientX, e.clientY));
       c.addEventListener('mouseleave', hideTip);
     });
-    document.querySelectorAll('#card circle.curvept').forEach(c => {
+    root.querySelectorAll('circle.curvept').forEach(c => {
       c.addEventListener('mousemove', e => showTip(
         `${c.dataset.x} &rarr; zStuff ${fmtZ(+c.dataset.z)}`, e.clientX, e.clientY));
       c.addEventListener('mouseleave', hideTip);
     });
+  }
+
+  function toggleRow(tr, pt) {
+    const next = tr.nextElementSibling;
+    if (next && next.classList.contains('expandrow')) {
+      next.remove();
+      tr.classList.remove('open');
+      return;
+    }
+    const er = document.createElement('tr');
+    er.className = 'expandrow';
+    er.innerHTML = `<td colspan="8">${cardHTML(pt)}</td>`;
+    tr.after(er);
+    tr.classList.add('open');
+    bindCardIn(er, pt);
   }
 
   const ALLBOARD = {};
@@ -256,7 +271,7 @@
           </tr></thead>
           <tbody>
             ${cur.map(({ pt, r }) => `<tr data-pt="${pt}">
-              <td class="l"><span class="ptchip" style="--pt:${ptColor(pt)}">
+              <td class="l"><span class="caret no-export">▸</span><span class="ptchip" style="--pt:${ptColor(pt)}">
                 <span class="dot"></span>${PT_NAMES[pt]}</span></td>
               <td>${fmtN(r[ROW.N])}</td>
               <td>${r[ROW.VELO].toFixed(1)}</td>
@@ -268,27 +283,22 @@
             </tr>`).join('')}
           </tbody>
         </table></div>
-      </div>
-      <div class="seg pttabs" id="pttabs">
-        ${pts.map(pt => `<button data-pt="${pt}" style="--pt:${ptColor(pt)}" title="${PT_NAMES[pt]}">
-          <span class="dot"></span>${PT_NAMES[pt]}</button>`).join('')}
-      </div>
-      <div id="card"></div>`;
+      </div>`;
 
-    document.querySelectorAll('#pttabs button').forEach(b => {
-      b.onclick = () => renderCard(b.dataset.pt);
-    });
-    document.querySelectorAll('.sumtab tbody tr').forEach(tr => {
-      tr.onclick = () => renderCard(tr.dataset.pt);
+    document.querySelectorAll('.sumtab tbody tr[data-pt]').forEach(tr => {
+      tr.onclick = () => toggleRow(tr, tr.dataset.pt);
     });
     const dlS = document.getElementById('dl-summary');
-    if (dlS) dlS.onclick = () => downloadCard(
-      document.querySelector('.ptcard.summary'),
-      `${slug(PLAYER.name)}-${SEASON}-arsenal.png`,
-      new URLSearchParams(location.search).has('dltest'));
+    if (dlS) dlS.onclick = e => {
+      e.stopPropagation();
+      downloadCard(document.querySelector('.ptcard.summary'),
+        `${slug(PLAYER.name)}-${SEASON}-arsenal.png`,
+        new URLSearchParams(location.search).has('dltest'));
+    };
     if (dlS && new URLSearchParams(location.search).has('dltest'))
-      setTimeout(() => dlS.onclick(), 800);
-    renderCard(cur.length ? cur[0].pt : null);
+      setTimeout(() => dlS.onclick(new Event('click')), 800);
+    const first = document.querySelector('.sumtab tbody tr[data-pt]');
+    if (first) toggleRow(first, first.dataset.pt);
   }
 
   async function show(id) {

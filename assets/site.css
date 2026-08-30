@@ -382,3 +382,16 @@ footer p { margin: 4px 0; }
   cursor: pointer;
 }
 .dlbtn:hover { color: var(--ink); border-color: var(--accent); }
+
+/* accordion rows in the arsenal summary */
+.sumtab .caret {
+  display: inline-block;
+  color: var(--muted);
+  margin-right: 8px;
+  transition: transform 0.15s;
+}
+.sumtab tr.open .caret { transform: rotate(90deg); color: var(--ink-2); }
+.sumtab tr.expandrow { cursor: default; }
+.sumtab tr.expandrow:hover td { background: transparent; }
+.sumtab tr.expandrow > td { padding: 4px 0 16px; white-space: normal; text-align: left; }
+.sumtab tr.expandrow .ptcard { margin-top: 6px; }
