@@ -12,7 +12,7 @@ const fmtZ = v => (v > 0 ? '+' : '') + v.toFixed(2);
 const fmtG = v => (v > 0 ? '+' : '') + v.toFixed(2);
 const fmtN = v => v.toLocaleString('en-US');
 
-const DATA_V = '20';
+const DATA_V = '21';
 async function getJSON(path) {
   const r = await fetch(path + '?v=' + DATA_V);
   if (!r.ok) throw new Error(`${path}: ${r.status}`);
@@ -49,7 +49,7 @@ function hideTip() { tooltipEl().style.display = 'none'; }
 // One-click card download: clone the card with computed styles inlined,
 // rasterize via SVG foreignObject -> canvas, save as PNG. Self-contained.
 async function downloadCard(el, filename, testMode) {
-  const W = el.offsetWidth, H = el.offsetHeight, PAD = 28, SCALE = 2;
+  const W = el.offsetWidth, H = el.offsetHeight, PAD = 8, SCALE = 2;
   const clone = el.cloneNode(true);
   const src = el.querySelectorAll('*'), dst = clone.querySelectorAll('*');
   const inline = (s, d) => {
