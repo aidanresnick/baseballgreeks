@@ -27,7 +27,7 @@ start=$(date -j -f "%F" -v+1d "$last_end" +%F)
 
 # 2. Pull the new days from Baseball Savant.
 echo "pulling $start -> $yesterday"
-$PY pull_statcast.py "$start" "$yesterday"
+$PY ingest/pull_statcast.py "$start" "$yesterday"
 new_file="data/statcast_${start}_to_${yesterday}.csv"
 if [[ ! -s $new_file || $(head -2 "$new_file" | wc -l) -lt 2 ]]; then
   echo "no pitches in range (off-day/off-season) — removing empty file"
@@ -37,14 +37,14 @@ fi
 
 # 3. Refresh pitcher positions (fetches only ids not seen before), then refit
 #    the canonical model in the sandbox (writes nightly_run/output only).
-$PY update_pitcher_positions.py
+$PY ingest/update_pitcher_positions.py
 cp -f output/xnk_selection.csv nightly_run/output/
 echo "refitting xns model"
-( cd nightly_run && ../.venv/bin/python _exp_csw_xns_allpt.py )
+( cd nightly_run && ../.venv/bin/python model/stuff_xns.py )
 
 # 4. Refresh SP/RP roles (reads the fresh pt_counts; fetches only missing +
 #    current season), then rebuild site JSON from the nightly outputs.
-$PY update_pitcher_roles.py
+$PY ingest/update_pitcher_roles.py
 $PY $SITE/build_data.py $BB/nightly_run/output
 
 # 5. Commit + push only if anything changed.
